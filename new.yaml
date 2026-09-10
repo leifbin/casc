@@ -1,0 +1,512 @@
+jenkins:
+   
+  numExecutors: 0
+  scmCheckoutRetryCount: 2
+  disableRememberMe: true
+
+  clouds:
+    - kubernetes:
+        name: "kubernetes"
+        serverUrl: "https://kubernetes.default"
+        skipTlsVerify: true
+        namespace: "jenkins"
+        credentialsId: "jenkins"
+
+        # Jenkins Controller Service
+        jenkinsUrl: "http://jenkins.jenkins.svc.cluster.local:8080"
+
+        # Jenkins Agent Service
+        jenkinsTunnel: "jenkins-agent.jenkins.svc.cluster.local:50000"
+
+        containerCapStr: "10"
+        connectTimeout: "60"
+        readTimeout: "60"
+        maxRequestsPerHostStr: "32"
+
+        templates:
+
+          # ============================================================
+          # Base
+          # ============================================================
+          - name: "base"
+            namespace: "jenkins"
+            label: "base"
+            nodeUsageMode: "NORMAL"
+            idleMinutes: 0
+
+            containers:
+              - name: "base"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl"
+                command: "cat"
+                args: ""
+                ttyEnabled: true
+                privileged: true
+                resourceRequestCpu: "500m"
+                resourceLimitCpu: "4000m"
+                resourceRequestMemory: "1000Mi"
+                resourceLimitMemory: "8192Mi"
+
+              - name: "jnlp"
+                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                resourceRequestCpu: "100m"
+                resourceLimitCpu: "500m"
+                resourceRequestMemory: "400Mi"
+                resourceLimitMemory: "1536Mi"
+
+            workspaceVolume:
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            volumes:
+              - hostPathVolume:
+                  hostPath: "/var/run/docker.sock"
+                  mountPath: "/var/run/docker.sock"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_sonar_cache"
+                  mountPath: "/root/.sonar/cache"
+
+            yaml: |
+              spec:
+                activeDeadlineSeconds: 21600
+
+                affinity:
+                  nodeAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 1
+                        preference:
+                          matchExpressions:
+                            - key: node-role.kubernetes.io/worker
+                              operator: In
+                              values:
+                                - ci
+
+                tolerations:
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "NoSchedule"
+
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "PreferNoSchedule"
+
+                containers:
+                  - name: "base"
+                    resources:
+                      requests:
+                        ephemeral-storage: "1Gi"
+                      limits:
+                        ephemeral-storage: "10Gi"
+
+                securityContext:
+                  fsGroup: 1000
+
+
+          # ============================================================
+          # NodeJS
+          # ============================================================
+          - name: "nodejs"
+            namespace: "jenkins"
+            label: "nodejs"
+            nodeUsageMode: "EXCLUSIVE"
+            idleMinutes: 0
+
+            containers:
+              - name: "nodejs"
+                image: "docker.io/kubesphere/builder-nodejs:v3.2.0-podman"
+                command: "cat"
+                args: ""
+                ttyEnabled: true
+                privileged: true
+                resourceRequestCpu: "1000m"
+                resourceLimitCpu: "4000m"
+                resourceRequestMemory: "2000Mi"
+                resourceLimitMemory: "8192Mi"
+
+              - name: "jnlp"
+                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                resourceRequestCpu: "100m"
+                resourceLimitCpu: "500m"
+                resourceRequestMemory: "400Mi"
+                resourceLimitMemory: "1536Mi"
+
+            workspaceVolume:
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            volumes:
+              - hostPathVolume:
+                  hostPath: "/var/run/docker.sock"
+                  mountPath: "/var/run/docker.sock"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_nodejs_yarn_cache"
+                  mountPath: "/root/.yarn"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_nodejs_npm_cache"
+                  mountPath: "/root/.npm"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_sonar_cache"
+                  mountPath: "/root/.sonar/cache"
+
+            yaml: |
+              spec:
+                activeDeadlineSeconds: 21600
+
+                affinity:
+                  nodeAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 1
+                        preference:
+                          matchExpressions:
+                            - key: node-role.kubernetes.io/worker
+                              operator: In
+                              values:
+                                - ci
+
+                tolerations:
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "NoSchedule"
+
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "PreferNoSchedule"
+
+                containers:
+                  - name: "nodejs"
+                    resources:
+                      requests:
+                        ephemeral-storage: "1Gi"
+                      limits:
+                        ephemeral-storage: "10Gi"
+
+                securityContext:
+                  fsGroup: 1000
+
+
+          # ============================================================
+          # Maven
+          # ============================================================
+          - name: "maven"
+            namespace: "jenkins"
+            label: "maven"
+            nodeUsageMode: "EXCLUSIVE"
+            idleMinutes: 0
+
+            containers:
+              - name: "maven"
+                image: "docker.io/kubesphere/builder-maven:v3.2.0-podman"
+                command: "cat"
+                args: ""
+                ttyEnabled: true
+                privileged: true
+                resourceRequestCpu: "1000m"
+                resourceLimitCpu: "4000m"
+                resourceRequestMemory: "2000Mi"
+                resourceLimitMemory: "8192Mi"
+
+              - name: "jnlp"
+                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                resourceRequestCpu: "100m"
+                resourceLimitCpu: "500m"
+                resourceRequestMemory: "400Mi"
+                resourceLimitMemory: "1536Mi"
+
+            workspaceVolume:
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            volumes:
+              - hostPathVolume:
+                  hostPath: "/var/run/docker.sock"
+                  mountPath: "/var/run/docker.sock"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_maven_cache"
+                  mountPath: "/root/.m2"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_sonar_cache"
+                  mountPath: "/root/.sonar/cache"
+
+            yaml: |
+              spec:
+                activeDeadlineSeconds: 21600
+
+                affinity:
+                  nodeAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 1
+                        preference:
+                          matchExpressions:
+                            - key: node-role.kubernetes.io/worker
+                              operator: In
+                              values:
+                                - ci
+
+                tolerations:
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "NoSchedule"
+
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "PreferNoSchedule"
+
+                containers:
+                  - name: "maven"
+                    resources:
+                      requests:
+                        ephemeral-storage: "1Gi"
+                      limits:
+                        ephemeral-storage: "10Gi"
+
+                    volumeMounts:
+                      - name: config-volume
+                        mountPath: /opt/apache-maven-3.5.3/conf/settings.xml
+                        subPath: settings.xml
+
+                volumes:
+                  - name: config-volume
+                    configMap:
+                      name: jenkins-maven-settings
+                      items:
+                        - key: MavenSetting
+                          path: settings.xml
+
+                securityContext:
+                  fsGroup: 1000
+
+
+          # ============================================================
+          # Maven JDK 11
+          # ============================================================
+          - name: "mavenjdk11"
+            label: "jdk11 maven java"
+            inheritFrom: "maven"
+
+            containers:
+              - name: "maven"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder-maven:jdk11-podman-20260819"
+
+
+          # ============================================================
+          # Maven JDK 21
+          # ============================================================
+          - name: "mavenjdk21"
+            label: "jdk21 maven java"
+            inheritFrom: "maven"
+
+            containers:
+              - name: "maven"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder-maven:jdk21-podman-20260717"
+
+
+          # ============================================================
+          # Go
+          # ============================================================
+          - name: "go"
+            namespace: "jenkins"
+            label: "go"
+            nodeUsageMode: "EXCLUSIVE"
+            idleMinutes: 0
+
+            containers:
+              - name: "go"
+                image: "docker.io/kubesphere/builder-go:v3.2.0-podman"
+                command: "cat"
+                args: ""
+                ttyEnabled: true
+                privileged: true
+                resourceRequestCpu: "500m"
+                resourceLimitCpu: "4000m"
+                resourceRequestMemory: "1000Mi"
+                resourceLimitMemory: "8192Mi"
+
+              - name: "jnlp"
+                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                resourceRequestCpu: "100m"
+                resourceLimitCpu: "500m"
+                resourceRequestMemory: "400Mi"
+                resourceLimitMemory: "1536Mi"
+
+            workspaceVolume:
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            volumes:
+              - hostPathVolume:
+                  hostPath: "/var/run/docker.sock"
+                  mountPath: "/var/run/docker.sock"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_go_cache"
+                  mountPath: "/home/jenkins/go/pkg"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_sonar_cache"
+                  mountPath: "/root/.sonar/cache"
+
+            yaml: |
+              spec:
+                activeDeadlineSeconds: 21600
+
+                affinity:
+                  nodeAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 1
+                        preference:
+                          matchExpressions:
+                            - key: node-role.kubernetes.io/worker
+                              operator: In
+                              values:
+                                - ci
+
+                tolerations:
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "NoSchedule"
+
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "PreferNoSchedule"
+
+                containers:
+                  - name: "go"
+                    resources:
+                      requests:
+                        ephemeral-storage: "1Gi"
+                      limits:
+                        ephemeral-storage: "10Gi"
+
+                securityContext:
+                  fsGroup: 1000
+
+
+          # ============================================================
+          # Go 1.16
+          # ============================================================
+          - name: "go16"
+            label: "go16"
+            inheritFrom: "go"
+
+            containers:
+              - name: "go"
+                image: "docker.io/kubesphere/builder-go:v3.2.2-1.16-podman"
+
+
+          # ============================================================
+          # Go 1.17
+          # ============================================================
+          - name: "go17"
+            label: "go17"
+            inheritFrom: "go"
+
+            containers:
+              - name: "go"
+                image: "docker.io/kubesphere/builder-go:v3.2.2-1.17-podman"
+
+
+          # ============================================================
+          # Go 1.18
+          # ============================================================
+          - name: "go18"
+            label: "go18"
+            inheritFrom: "go"
+
+            containers:
+              - name: "go"
+                image: "docker.io/kubesphere/builder-go:v3.2.2-1.18-podman"
+
+
+          # ============================================================
+          # Python
+          # ============================================================
+          - name: "python"
+            namespace: "jenkins"
+            label: "python"
+            nodeUsageMode: "EXCLUSIVE"
+            idleMinutes: 0
+
+            containers:
+              - name: "python"
+                image: "docker.io/kubesphere/builder-python:v3.2.0-podman"
+                command: "cat"
+                args: ""
+                ttyEnabled: true
+                privileged: true
+                resourceRequestCpu: "100m"
+                resourceLimitCpu: "4000m"
+                resourceRequestMemory: "100Mi"
+                resourceLimitMemory: "8192Mi"
+
+              - name: "jnlp"
+                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                resourceRequestCpu: "100m"
+                resourceLimitCpu: "500m"
+                resourceRequestMemory: "400Mi"
+                resourceLimitMemory: "1536Mi"
+
+            workspaceVolume:
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            volumes:
+              - hostPathVolume:
+                  hostPath: "/var/run/docker.sock"
+                  mountPath: "/var/run/docker.sock"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_python_pip_cache"
+                  mountPath: "/root/.cache/pip"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_python_pipenv_cache"
+                  mountPath: "/root/.local/share/virtualenvs"
+
+              - hostPathVolume:
+                  hostPath: "/var/data/jenkins_sonar_cache"
+                  mountPath: "/root/.sonar/cache"
+
+            yaml: |
+              spec:
+                activeDeadlineSeconds: 21600
+
+                affinity:
+                  nodeAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 1
+                        preference:
+                          matchExpressions:
+                            - key: node-role.kubernetes.io/worker
+                              operator: In
+                              values:
+                                - ci
+
+                tolerations:
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "NoSchedule"
+
+                  - key: "node.kubernetes.io/ci"
+                    operator: "Exists"
+                    effect: "PreferNoSchedule"
+
+                containers:
+                  - name: "python"
+                    resources:
+                      requests:
+                        ephemeral-storage: "1Gi"
+                      limits:
+                        ephemeral-storage: "10Gi"
+
+                securityContext:
+                  fsGroup: 1000
