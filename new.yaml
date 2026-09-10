@@ -107,7 +107,6 @@ jenkins:
                 securityContext:
                   fsGroup: 1000
 
-
           # ============================================================
           # NodeJS
           # ============================================================
@@ -141,27 +140,6 @@ jenkins:
               emptyDirWorkspaceVolume:
                 memory: false
 
-            volumes:
-              # npm 缓存
-              - persistentVolumeClaim:
-                  claimName: "jenkins-agent-pvc"
-                  mountPath: "/root/.npm"
-                  subPath: "npm"
-                  readOnly: false
-
-              # yarn 缓存
-              - persistentVolumeClaim:
-                  claimName: "jenkins-agent-pvc"
-                  mountPath: "/root/.yarn"
-                  subPath: "yarn"
-                  readOnly: false
-
-              # sonar 缓存
-              - persistentVolumeClaim:
-                  claimName: "jenkins-agent-pvc"
-                  mountPath: "/root/.sonar/cache"
-                  subPath: "sonar"
-                  readOnly: false
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
@@ -193,10 +171,30 @@ jenkins:
                         ephemeral-storage: "1Gi"
                       limits:
                         ephemeral-storage: "10Gi"
+                    volumeMounts:
+                      - name: npm-cache
+                        mountPath: /root/.npm
+                        subPath: npm
+                      - name: yarn-cache
+                        mountPath: /root/.yarn
+                        subPath: yarn
+                      - name: sonar-cache
+                        mountPath: /root/.sonar/cache
+                        subPath: sonar
+
+                volumes:
+                  - name: npm-cache
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
+                  - name: yarn-cache
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
+                  - name: sonar-cache
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
 
                 securityContext:
                   fsGroup: 1000
-
 
           # ============================================================
           # Maven
@@ -231,27 +229,12 @@ jenkins:
               emptyDirWorkspaceVolume:
                 memory: false
 
-            volumes:
-              # npm 缓存
-              - persistentVolumeClaim:
-                  claimName: "jenkins-agent-pvc"
-                  mountPath: "/root/.m2"
-                  subPath: "m2"
-                  readOnly: false
-
-              - persistentVolumeClaim:
-                  claimName: "jenkins-agent-pvc"
-                  mountPath: "/root/.sonar/cache"
-                  subPath: "sonar"
-                  readOnly: false
-
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
 
                 affinity: {}
-
-                tolerations:[]
+                tolerations: []
 
                 containers:
                   - name: "maven"
@@ -265,6 +248,12 @@ jenkins:
                       - name: config-volume
                         mountPath: /opt/apache-maven-3.5.3/conf/settings.xml
                         subPath: settings.xml
+                      - name: m2-cache
+                        mountPath: /root/.m2
+                        subPath: m2
+                      - name: sonar-cache
+                        mountPath: /root/.sonar/cache
+                        subPath: sonar
 
                 volumes:
                   - name: config-volume
@@ -273,10 +262,15 @@ jenkins:
                       items:
                         - key: MavenSetting
                           path: settings.xml
+                  - name: m2-cache
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
+                  - name: sonar-cache
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
 
                 securityContext:
                   fsGroup: 1000
-
 
           # ============================================================
           # Maven JDK 11
@@ -289,7 +283,6 @@ jenkins:
               - name: "maven"
                 image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder-maven:jdk11-podman-20260819"
 
-
           # ============================================================
           # Maven JDK 21
           # ============================================================
@@ -300,7 +293,6 @@ jenkins:
             containers:
               - name: "maven"
                 image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder-maven:jdk21-podman-20260717"
-
 
           # ============================================================
           # Go
@@ -335,18 +327,6 @@ jenkins:
               emptyDirWorkspaceVolume:
                 memory: false
 
-            volumes:
-              - persistentVolumeClaim:
-                  claimName: "jenkins-agent-pvc"
-                  mountPath: "/home/jenkins/go/pkg"
-                  subPath: "hopkg"
-                  readOnly: false
-
-              - persistentVolumeClaim:
-                  claimName: "jenkins-agent-pvc"
-                  mountPath: "/go/pkg"
-                  subPath: "gopkg"
-                  readOnly: false
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
@@ -378,10 +358,24 @@ jenkins:
                         ephemeral-storage: "1Gi"
                       limits:
                         ephemeral-storage: "10Gi"
+                    volumeMounts:
+                      - name: go-pkg-cache
+                        mountPath: /home/jenkins/go/pkg
+                        subPath: hopkg
+                      - name: go-pkg-cache2
+                        mountPath: /go/pkg
+                        subPath: gopkg
+
+                volumes:
+                  - name: go-pkg-cache
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
+                  - name: go-pkg-cache2
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
 
                 securityContext:
                   fsGroup: 1000
-
 
           # ============================================================
           # Go 1.16
@@ -394,7 +388,6 @@ jenkins:
               - name: "go"
                 image: "docker.io/kubesphere/builder-go:v3.2.2-1.16-podman"
 
-
           # ============================================================
           # Go 1.17
           # ============================================================
@@ -406,7 +399,6 @@ jenkins:
               - name: "go"
                 image: "docker.io/kubesphere/builder-go:v3.2.2-1.17-podman"
 
-
           # ============================================================
           # Go 1.18
           # ============================================================
@@ -417,7 +409,6 @@ jenkins:
             containers:
               - name: "go"
                 image: "docker.io/kubesphere/builder-go:v3.2.2-1.18-podman"
-
 
           # ============================================================
           # Python
@@ -452,21 +443,6 @@ jenkins:
               emptyDirWorkspaceVolume:
                 memory: false
 
-            volumes:
-              - persistentVolumeClaim:
-                  claimName: "jenkins-agent-pvc"
-                  mountPath: "/root/.cache/pip"
-                  subPath: "pip"
-                  readOnly: false
-
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_python_pipenv_cache"
-                  mountPath: "/root/.local/share/virtualenvs"
-
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_sonar_cache"
-                  mountPath: "/root/.sonar/cache"
-
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
@@ -498,6 +474,25 @@ jenkins:
                         ephemeral-storage: "1Gi"
                       limits:
                         ephemeral-storage: "10Gi"
+                    volumeMounts:
+                      - name: pip-cache
+                        mountPath: /root/.cache/pip
+                        subPath: pip
+                      - name: pipenv-cache
+                        mountPath: /root/.local/share/virtualenvs
+                      - name: sonar-cache
+                        mountPath: /root/.sonar/cache
+
+                volumes:
+                  - name: pip-cache
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
+                  - name: pipenv-cache
+                    hostPath:
+                      path: /var/data/jenkins_python_pipenv_cache
+                  - name: sonar-cache
+                    hostPath:
+                      path: /var/data/jenkins_sonar_cache
 
                 securityContext:
                   fsGroup: 1000
