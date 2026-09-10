@@ -1,9 +1,23 @@
 jenkins:
-   
-  numExecutors: 0
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+      - id: "${chart-admin-username}"
+        name: "Jenkins Admin"
+        password: "${chart-admin-password}"
+  disableRememberMe: false
   scmCheckoutRetryCount: 2
-  disableRememberMe: true
-
+  mode: NORMAL
+  numExecutors: 0
+  labelString: ""
+  projectNamingStrategy: "standard"
+  markupFormatter:
+    plainText
   clouds:
     - kubernetes:
         name: "kubernetes"
@@ -47,7 +61,7 @@ jenkins:
                 resourceLimitMemory: "8192Mi"
 
               - name: "jnlp"
-                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                image: "docker.io/jenkins/inbound-agent:latest"
                 args: "^${computer.jnlpmac} ^${computer.name}"
                 resourceRequestCpu: "100m"
                 resourceLimitCpu: "500m"
@@ -57,15 +71,6 @@ jenkins:
             workspaceVolume:
               emptyDirWorkspaceVolume:
                 memory: false
-
-            volumes:
-              - hostPathVolume:
-                  hostPath: "/var/run/docker.sock"
-                  mountPath: "/var/run/docker.sock"
-
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_sonar_cache"
-                  mountPath: "/root/.sonar/cache"
 
             yaml: |
               spec:
@@ -125,7 +130,7 @@ jenkins:
                 resourceLimitMemory: "8192Mi"
 
               - name: "jnlp"
-                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                image: "docker.io/jenkins/inbound-agent:latest"
                 args: "^${computer.jnlpmac} ^${computer.name}"
                 resourceRequestCpu: "100m"
                 resourceLimitCpu: "500m"
@@ -137,22 +142,26 @@ jenkins:
                 memory: false
 
             volumes:
-              - hostPathVolume:
-                  hostPath: "/var/run/docker.sock"
-                  mountPath: "/var/run/docker.sock"
-
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_nodejs_yarn_cache"
-                  mountPath: "/root/.yarn"
-
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_nodejs_npm_cache"
+              # npm 缓存
+              - persistentVolumeClaim:
+                  claimName: "jenkins-agent-pvc"
                   mountPath: "/root/.npm"
+                  subPath: "npm"
+                  readOnly: false
 
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_sonar_cache"
+              # yarn 缓存
+              - persistentVolumeClaim:
+                  claimName: "jenkins-agent-pvc"
+                  mountPath: "/root/.yarn"
+                  subPath: "yarn"
+                  readOnly: false
+
+              # sonar 缓存
+              - persistentVolumeClaim:
+                  claimName: "jenkins-agent-pvc"
                   mountPath: "/root/.sonar/cache"
-
+                  subPath: "sonar"
+                  readOnly: false
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
@@ -211,7 +220,7 @@ jenkins:
                 resourceLimitMemory: "8192Mi"
 
               - name: "jnlp"
-                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                image: "docker.io/jenkins/inbound-agent:latest"
                 args: "^${computer.jnlpmac} ^${computer.name}"
                 resourceRequestCpu: "100m"
                 resourceLimitCpu: "500m"
@@ -223,41 +232,26 @@ jenkins:
                 memory: false
 
             volumes:
-              - hostPathVolume:
-                  hostPath: "/var/run/docker.sock"
-                  mountPath: "/var/run/docker.sock"
-
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_maven_cache"
+              # npm 缓存
+              - persistentVolumeClaim:
+                  claimName: "jenkins-agent-pvc"
                   mountPath: "/root/.m2"
+                  subPath: "m2"
+                  readOnly: false
 
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_sonar_cache"
+              - persistentVolumeClaim:
+                  claimName: "jenkins-agent-pvc"
                   mountPath: "/root/.sonar/cache"
+                  subPath: "sonar"
+                  readOnly: false
 
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
 
-                affinity:
-                  nodeAffinity:
-                    preferredDuringSchedulingIgnoredDuringExecution:
-                      - weight: 1
-                        preference:
-                          matchExpressions:
-                            - key: node-role.kubernetes.io/worker
-                              operator: In
-                              values:
-                                - ci
+                affinity: {}
 
-                tolerations:
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "NoSchedule"
-
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "PreferNoSchedule"
+                tolerations:[]
 
                 containers:
                   - name: "maven"
@@ -330,7 +324,7 @@ jenkins:
                 resourceLimitMemory: "8192Mi"
 
               - name: "jnlp"
-                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                image: "docker.io/jenkins/inbound-agent:latest"
                 args: "^${computer.jnlpmac} ^${computer.name}"
                 resourceRequestCpu: "100m"
                 resourceLimitCpu: "500m"
@@ -342,18 +336,17 @@ jenkins:
                 memory: false
 
             volumes:
-              - hostPathVolume:
-                  hostPath: "/var/run/docker.sock"
-                  mountPath: "/var/run/docker.sock"
-
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_go_cache"
+              - persistentVolumeClaim:
+                  claimName: "jenkins-agent-pvc"
                   mountPath: "/home/jenkins/go/pkg"
+                  subPath: "hopkg"
+                  readOnly: false
 
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_sonar_cache"
-                  mountPath: "/root/.sonar/cache"
-
+              - persistentVolumeClaim:
+                  claimName: "jenkins-agent-pvc"
+                  mountPath: "/go/pkg"
+                  subPath: "gopkg"
+                  readOnly: false
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
@@ -448,7 +441,7 @@ jenkins:
                 resourceLimitMemory: "8192Mi"
 
               - name: "jnlp"
-                image: "docker.io/jenkins/inbound-agent:4.10-2"
+                image: "docker.io/jenkins/inbound-agent:latest"
                 args: "^${computer.jnlpmac} ^${computer.name}"
                 resourceRequestCpu: "100m"
                 resourceLimitCpu: "500m"
@@ -460,13 +453,11 @@ jenkins:
                 memory: false
 
             volumes:
-              - hostPathVolume:
-                  hostPath: "/var/run/docker.sock"
-                  mountPath: "/var/run/docker.sock"
-
-              - hostPathVolume:
-                  hostPath: "/var/data/jenkins_python_pip_cache"
+              - persistentVolumeClaim:
+                  claimName: "jenkins-agent-pvc"
                   mountPath: "/root/.cache/pip"
+                  subPath: "pip"
+                  readOnly: false
 
               - hostPathVolume:
                   hostPath: "/var/data/jenkins_python_pipenv_cache"
