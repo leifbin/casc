@@ -24,7 +24,7 @@ jenkins:
         serverUrl: "https://kubernetes.default"
         skipTlsVerify: true
         namespace: "jenkins"
-        credentialsId: "jenkins"
+        credentialsId: ""
 
         # Jenkins Controller Service
         jenkinsUrl: "http://jenkins.jenkins.svc.cluster.local:8080"
