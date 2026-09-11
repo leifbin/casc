@@ -55,7 +55,7 @@ jenkins:
                 args: ""
                 ttyEnabled: true
                 privileged: true
-                resourceRequestCpu: "500m"
+                resourceRequestCpu: "1000m"
                 resourceLimitCpu: "4000m"
                 resourceRequestMemory: "1000Mi"
                 resourceLimitMemory: "8192Mi"
@@ -297,7 +297,7 @@ jenkins:
                 args: ""
                 ttyEnabled: true
                 privileged: true
-                resourceRequestCpu: "500m"
+                resourceRequestCpu: "1000m"
                 resourceLimitCpu: "4000m"
                 resourceRequestMemory: "1000Mi"
                 resourceLimitMemory: "8192Mi"
@@ -383,7 +383,7 @@ jenkins:
                 args: ""
                 ttyEnabled: true
                 privileged: true
-                resourceRequestCpu: "100m"
+                resourceRequestCpu: "1000m"
                 resourceLimitCpu: "4000m"
                 resourceRequestMemory: "100Mi"
                 resourceLimitMemory: "8192Mi"
