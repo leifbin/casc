@@ -79,22 +79,15 @@ jenkins:
                 affinity:
                   nodeAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
-                      - weight: 1
+                      - weight: 100
                         preference:
                           matchExpressions:
-                            - key: node-role.kubernetes.io/worker
+                            - key: type
                               operator: In
                               values:
                                 - ci
 
-                tolerations:
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "NoSchedule"
-
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "PreferNoSchedule"
+                tolerations: []
 
                 containers:
                   - name: "base"
@@ -147,22 +140,15 @@ jenkins:
                 affinity:
                   nodeAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
-                      - weight: 1
+                      - weight: 100
                         preference:
                           matchExpressions:
-                            - key: node-role.kubernetes.io/worker
+                            - key: type
                               operator: In
                               values:
                                 - ci
 
-                tolerations:
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "NoSchedule"
-
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "PreferNoSchedule"
+                tolerations: []
 
                 containers:
                   - name: "nodejs"
@@ -233,7 +219,17 @@ jenkins:
               spec:
                 activeDeadlineSeconds: 21600
 
-                affinity: {}
+                affinity:
+                  nodeAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: type
+                              operator: In
+                              values:
+                                - ci
+
                 tolerations: []
 
                 containers:
@@ -325,23 +321,15 @@ jenkins:
                 affinity:
                   nodeAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
-                      - weight: 1
+                      - weight: 100
                         preference:
                           matchExpressions:
-                            - key: node-role.kubernetes.io/worker
+                            - key: type
                               operator: In
                               values:
                                 - ci
 
-                tolerations:
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "NoSchedule"
-
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "PreferNoSchedule"
-
+                tolerations: []
                 containers:
                   - name: "go"
                     resources:
@@ -419,22 +407,15 @@ jenkins:
                 affinity:
                   nodeAffinity:
                     preferredDuringSchedulingIgnoredDuringExecution:
-                      - weight: 1
+                      - weight: 100
                         preference:
                           matchExpressions:
-                            - key: node-role.kubernetes.io/worker
+                            - key: type
                               operator: In
                               values:
                                 - ci
 
-                tolerations:
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "NoSchedule"
-
-                  - key: "node.kubernetes.io/ci"
-                    operator: "Exists"
-                    effect: "PreferNoSchedule"
+                tolerations: []
 
                 containers:
                   - name: "python"
