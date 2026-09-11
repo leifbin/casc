@@ -245,9 +245,6 @@ jenkins:
                         ephemeral-storage: "10Gi"
 
                     volumeMounts:
-                      - name: config-volume
-                        mountPath: /opt/apache-maven-3.5.3/conf/settings.xml
-                        subPath: settings.xml
                       - name: m2-cache
                         mountPath: /root/.m2
                         subPath: m2
@@ -256,12 +253,6 @@ jenkins:
                         subPath: sonar
 
                 volumes:
-                  - name: config-volume
-                    configMap:
-                      name: jenkins-maven-settings
-                      items:
-                        - key: MavenSetting
-                          path: settings.xml
                   - name: m2-cache
                     persistentVolumeClaim:
                       claimName: jenkins-agent-pvc
