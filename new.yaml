@@ -259,6 +259,69 @@ jenkins:
                 securityContext:
                   fsGroup: 1000
 
+
+          # ============================================================
+          # cocos
+          # ============================================================
+          - name: "cocos"
+            namespace: "jenkins"
+            label: "cocos"
+            nodeUsageMode: "EXCLUSIVE"
+            idleMinutes: 0
+
+            containers:
+              - name: "cocos"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/cocos-builder:v1"
+                command: "cat"
+                args: ""
+                ttyEnabled: true
+                privileged: true
+                resourceRequestCpu: "1000m"
+                resourceLimitCpu: "4000m"
+                resourceRequestMemory: "2000Mi"
+                resourceLimitMemory: "8192Mi"
+
+              - name: "jnlp"
+                image: "docker.io/jenkins/inbound-agent:latest"
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                resourceRequestCpu: "100m"
+                resourceLimitCpu: "500m"
+                resourceRequestMemory: "400Mi"
+                resourceLimitMemory: "1536Mi"
+
+            workspaceVolume:
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            yaml: |
+              spec:
+                activeDeadlineSeconds: 21600
+
+                affinity:
+                  nodeAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: type
+                              operator: In
+                              values:
+                                - ci
+
+                tolerations: []
+
+                containers:
+                  - name: "cocos"
+                    resources:
+                      requests:
+                        ephemeral-storage: "1Gi"
+                      limits:
+                        ephemeral-storage: "20Gi"
+                        
+                securityContext:
+                  fsGroup: 1000
+
+
           # ============================================================
           # Maven JDK 11
           # ============================================================
@@ -301,7 +364,7 @@ jenkins:
                 resourceLimitCpu: "4000m"
                 resourceRequestMemory: "1000Mi"
                 resourceLimitMemory: "8192Mi"
-
+ 
               - name: "jnlp"
                 image: "docker.io/jenkins/inbound-agent:latest"
                 args: "^${computer.jnlpmac} ^${computer.name}"
