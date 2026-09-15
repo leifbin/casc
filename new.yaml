@@ -50,7 +50,8 @@ jenkins:
 
             containers:
               - name: "base"
-                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-20260911"
+                #image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-20260911"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260915"
                 command: "cat"
                 args: ""
                 ttyEnabled: true
