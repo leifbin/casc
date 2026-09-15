@@ -129,9 +129,14 @@ jenkins:
                 resourceRequestMemory: "400Mi"
                 resourceLimitMemory: "1536Mi"
 
+            # workspaceVolume:
+            #   emptyDirWorkspaceVolume:
+            #     memory: false
+
             workspaceVolume:
-              emptyDirWorkspaceVolume:
-                memory: false
+              persistentVolumeClaimWorkspaceVolume:
+                claimName: "jenkins-agent-pvc"
+                readOnly: false
 
             yaml: |
               spec:
