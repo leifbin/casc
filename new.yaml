@@ -253,12 +253,18 @@ jenkins:
                       - name: sonar-cache
                         mountPath: /root/.sonar/cache
                         subPath: sonar
+                      - name: gradle-cache               
+                        mountPath: /root/.gradle
+                        subPath: gradle
 
                 volumes:
                   - name: m2-cache
                     persistentVolumeClaim:
                       claimName: jenkins-agent-pvc
                   - name: sonar-cache
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
+                  - name: gradle-cache                  
                     persistentVolumeClaim:
                       claimName: jenkins-agent-pvc
 
