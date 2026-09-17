@@ -122,10 +122,10 @@ jenkins:
                 args: ""
                 ttyEnabled: true
                 privileged: true
-                resourceRequestCpu: "1000m"
-                resourceLimitCpu: "4000m"
-                resourceRequestMemory: "2000Mi"
-                resourceLimitMemory: "8192Mi"
+                resourceRequestCpu: "2000m"
+                resourceLimitCpu: "8000m"
+                resourceRequestMemory: "4000Mi"
+                resourceLimitMemory: "16000Mi"
 
               - name: "jnlp"
                 image: "docker.io/jenkins/inbound-agent:latest"
@@ -385,10 +385,10 @@ jenkins:
                 args: ""
                 ttyEnabled: true
                 privileged: true
-                resourceRequestCpu: "1000m"
-                resourceLimitCpu: "4000m"
-                resourceRequestMemory: "1000Mi"
-                resourceLimitMemory: "8192Mi"
+                resourceRequestCpu: "2000m"
+                resourceLimitCpu: "8000m"
+                resourceRequestMemory: "2000Mi"
+                resourceLimitMemory: "16000Mi"
  
               - name: "jnlp"
                 image: "docker.io/jenkins/inbound-agent:latest"
