@@ -70,14 +70,14 @@ jenkins:
                 resourceRequestMemory: "400Mi"
                 resourceLimitMemory: "1536Mi"
 
-            # workspaceVolume:
-            #   emptyDirWorkspaceVolume:
-            #     memory: false
-
             workspaceVolume:
-              persistentVolumeClaimWorkspaceVolume:
-                claimName: "jenkins-agent-pvc"
-                readOnly: false
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            # workspaceVolume:
+            #   persistentVolumeClaimWorkspaceVolume:
+            #     claimName: "jenkins-agent-pvc"
+            #     readOnly: false
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
@@ -135,14 +135,14 @@ jenkins:
                 resourceRequestMemory: "400Mi"
                 resourceLimitMemory: "1536Mi"
 
-            # workspaceVolume:
-            #   emptyDirWorkspaceVolume:
-            #     memory: false
-
             workspaceVolume:
-              persistentVolumeClaimWorkspaceVolume:
-                claimName: "jenkins-agent-pvc"
-                readOnly: false
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            # workspaceVolume:
+            #   persistentVolumeClaimWorkspaceVolume:
+            #     claimName: "jenkins-agent-pvc"
+            #     readOnly: false
 
             yaml: |
               spec:
@@ -222,13 +222,13 @@ jenkins:
                 resourceRequestMemory: "400Mi"
                 resourceLimitMemory: "1536Mi"
 
-            # workspaceVolume:
-            #   emptyDirWorkspaceVolume:
-            #     memory: false
             workspaceVolume:
-              persistentVolumeClaimWorkspaceVolume:
-                claimName: "jenkins-agent-pvc"
-                readOnly: false
+              emptyDirWorkspaceVolume:
+                memory: false
+            # workspaceVolume:
+            #   persistentVolumeClaimWorkspaceVolume:
+            #     claimName: "jenkins-agent-pvc"
+            #     readOnly: false
 
             yaml: |
               spec:
@@ -310,14 +310,14 @@ jenkins:
                 resourceRequestMemory: "400Mi"
                 resourceLimitMemory: "1536Mi"
 
-            # workspaceVolume:
-            #   emptyDirWorkspaceVolume:
-            #     memory: false
-
             workspaceVolume:
-              persistentVolumeClaimWorkspaceVolume:
-                claimName: "jenkins-agent-pvc"
-                readOnly: false
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            # workspaceVolume:
+            #   persistentVolumeClaimWorkspaceVolume:
+            #     claimName: "jenkins-agent-pvc"
+            #     readOnly: false
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
@@ -398,14 +398,14 @@ jenkins:
                 resourceRequestMemory: "400Mi"
                 resourceLimitMemory: "1536Mi"
 
-            # workspaceVolume:
-            #   emptyDirWorkspaceVolume:
-            #     memory: false
-
             workspaceVolume:
-              persistentVolumeClaimWorkspaceVolume:
-                claimName: "jenkins-agent-pvc"
-                readOnly: false
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            # workspaceVolume:
+            #   persistentVolumeClaimWorkspaceVolume:
+            #     claimName: "jenkins-agent-pvc"
+            #     readOnly: false
             yaml: |
               spec:
                 activeDeadlineSeconds: 21600
@@ -488,14 +488,14 @@ jenkins:
                 resourceRequestMemory: "400Mi"
                 resourceLimitMemory: "1536Mi"
 
-            # workspaceVolume:
-            #   emptyDirWorkspaceVolume:
-            #     memory: false
-
             workspaceVolume:
-              persistentVolumeClaimWorkspaceVolume:
-                claimName: "jenkins-agent-pvc"
-                readOnly: false
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            # workspaceVolume:
+            #   persistentVolumeClaimWorkspaceVolume:
+            #     claimName: "jenkins-agent-pvc"
+            #     readOnly: false
 
             yaml: |
               spec:
