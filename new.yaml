@@ -370,6 +370,17 @@ jenkins:
                 image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder-maven:jdk21-podman-20260717"
 
           # ============================================================
+          # Maven JDK 21
+          # ============================================================
+          - name: "mavenjdk25"
+            label: "jdk25 maven java"
+            inheritFrom: "maven"
+
+            containers:
+              - name: "maven"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder-maven:jdk25-20260922"
+
+          # ============================================================
           # Go
           # ============================================================
           - name: "go"
