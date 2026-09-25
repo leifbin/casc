@@ -46,7 +46,11 @@ jenkins:
             namespace: "jenkins"
             label: "base"
             nodeUsageMode: "NORMAL"
-            idleMinutes: 0
+            idleMinutes: 0     
+            envVars:
+              - envVar:
+                  key: "TZ"
+                  value: "Asia/Shanghai"
 
             containers:
               - name: "base"
@@ -114,6 +118,10 @@ jenkins:
             label: "nodejs"
             nodeUsageMode: "EXCLUSIVE"
             idleMinutes: 0
+            envVars:
+              - envVar:
+                  key: "TZ"
+                  value: "Asia/Shanghai"
 
             containers:
               - name: "nodejs"
@@ -201,6 +209,10 @@ jenkins:
             label: "maven"
             nodeUsageMode: "EXCLUSIVE"
             idleMinutes: 0
+            envVars:
+              - envVar:
+                  key: "TZ"
+                  value: "Asia/Shanghai"
 
             containers:
               - name: "maven"
@@ -289,6 +301,10 @@ jenkins:
             label: "cocos"
             nodeUsageMode: "EXCLUSIVE"
             idleMinutes: 0
+            envVars:
+              - envVar:
+                  key: "TZ"
+                  value: "Asia/Shanghai"
 
             containers:
               - name: "cocos"
@@ -388,6 +404,10 @@ jenkins:
             label: "go"
             nodeUsageMode: "EXCLUSIVE"
             idleMinutes: 0
+            envVars:
+              - envVar:
+                  key: "TZ"
+                  value: "Asia/Shanghai"
 
             containers:
               - name: "go"
@@ -478,7 +498,12 @@ jenkins:
             label: "python"
             nodeUsageMode: "EXCLUSIVE"
             idleMinutes: 0
+            envVars:
+              - envVar:
+                  key: "TZ"
+                  value: "Asia/Shanghai"
 
+                  
             containers:
               - name: "python"
                 image: "docker.io/kubesphere/builder-python:v3.2.0-podman"
