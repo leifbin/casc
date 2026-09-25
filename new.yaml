@@ -32,7 +32,7 @@ jenkins:
         # Jenkins Agent Service
         jenkinsTunnel: "jenkins-agent.jenkins.svc.cluster.local:50000"
 
-        containerCapStr: "10"
+        containerCapStr: "15"
         connectTimeout: "60"
         readTimeout: "60"
         maxRequestsPerHostStr: "32"
