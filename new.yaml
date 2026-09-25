@@ -103,9 +103,9 @@ jenkins:
                   - name: "base"
                     resources:
                       requests:
-                        ephemeral-storage: "1Gi"
+                        ephemeral-storage: "5Gi"
                       limits:
-                        ephemeral-storage: "10Gi"
+                        ephemeral-storage: "50Gi"
 
                 securityContext:
                   fsGroup: 1000
