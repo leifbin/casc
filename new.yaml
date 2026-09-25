@@ -32,7 +32,7 @@ jenkins:
         # Jenkins Agent Service
         jenkinsTunnel: "jenkins-agent.jenkins.svc.cluster.local:50000"
 
-        containerCapStr: "15"
+        containerCapStr: "10"
         connectTimeout: "60"
         readTimeout: "60"
         maxRequestsPerHostStr: "32"
@@ -503,7 +503,7 @@ jenkins:
                   key: "TZ"
                   value: "Asia/Shanghai"
 
-                  
+
             containers:
               - name: "python"
                 image: "docker.io/kubesphere/builder-python:v3.2.0-podman"
