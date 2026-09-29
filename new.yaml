@@ -103,7 +103,7 @@ jenkins:
                   - name: "base"
                     resources:
                       requests:
-                        ephemeral-storage: "5Gi"
+                        ephemeral-storage: "20Gi"
                       limits:
                         ephemeral-storage: "50Gi"
 
@@ -173,9 +173,9 @@ jenkins:
                   - name: "nodejs"
                     resources:
                       requests:
-                        ephemeral-storage: "1Gi"
+                        ephemeral-storage: "20Gi"
                       limits:
-                        ephemeral-storage: "10Gi"
+                        ephemeral-storage: "50Gi"
                     volumeMounts:
                       - name: npm-cache
                         mountPath: /root/.npm
@@ -263,9 +263,9 @@ jenkins:
                   - name: "maven"
                     resources:
                       requests:
-                        ephemeral-storage: "1Gi"
+                        ephemeral-storage: "20Gi"
                       limits:
-                        ephemeral-storage: "10Gi"
+                        ephemeral-storage: "50Gi"
 
                     volumeMounts:
                       - name: m2-cache
@@ -355,9 +355,9 @@ jenkins:
                   - name: "cocos"
                     resources:
                       requests:
-                        ephemeral-storage: "1Gi"
-                      limits:
                         ephemeral-storage: "20Gi"
+                      limits:
+                        ephemeral-storage: "50Gi"
                         
                 securityContext:
                   fsGroup: 1000
@@ -457,9 +457,9 @@ jenkins:
                   - name: "go"
                     resources:
                       requests:
-                        ephemeral-storage: "1Gi"
+                        ephemeral-storage: "20Gi"
                       limits:
-                        ephemeral-storage: "10Gi"
+                        ephemeral-storage: "50Gi"
                     volumeMounts:
                       - name: go-pkg-cache
                         mountPath: /home/jenkins/go/pkg
@@ -554,9 +554,9 @@ jenkins:
                   - name: "python"
                     resources:
                       requests:
-                        ephemeral-storage: "1Gi"
+                        ephemeral-storage: "20Gi"
                       limits:
-                        ephemeral-storage: "10Gi"
+                        ephemeral-storage: "50Gi"
                     volumeMounts:
                       - name: pip-cache
                         mountPath: /root/.cache/pip
