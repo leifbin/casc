@@ -114,9 +114,9 @@ jenkins:
           # ============================================================
           # Basetest
           # ============================================================
-          - name: "Basetest"
+          - name: "basetest"
             namespace: "jenkins"
-            label: "Basetest"
+            label: "basetest"
             nodeUsageMode: "NORMAL"
             idleMinutes: 0     
             envVars:
