@@ -183,10 +183,15 @@ jenkins:
                         mountPath: /var/lib/containers/storage
                       - name: podman-run
                         mountPath: /run/containers/storage
+                      - name: tmp-volume
+                        mountPath: /tmp
+
                 volumes:
                   - name: podman-storage
                     emptyDir: {}
                   - name: podman-run
+                    emptyDir: {}
+                  - name: tmp-volume
                     emptyDir: {}
 
                 securityContext:
