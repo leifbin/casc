@@ -56,8 +56,8 @@ jenkins:
               - name: "base"
                 #image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-20260911"#版本podman太老
                 #image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260915"#没有raync下面的打包加了rsync
-                #image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260916"
-                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260929-overlay"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260916"
+                #image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260929-overlay"
 
                 command: "cat"
                 args: ""
