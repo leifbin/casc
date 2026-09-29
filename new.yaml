@@ -56,8 +56,8 @@ jenkins:
               - name: "base"
                 #image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-20260911"#版本podman太老
                 #image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260915"#没有raync下面的打包加了rsync
-                #image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260916" #rsync 下面是添加storage配置
-                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260929"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260916"
+
                 command: "cat"
                 args: ""
                 ttyEnabled: true
@@ -102,6 +102,75 @@ jenkins:
 
                 containers:
                   - name: "base"
+                    resources:
+                      requests:
+                        ephemeral-storage: "20Gi"
+                      limits:
+                        ephemeral-storage: "50Gi"
+
+                securityContext:
+                  fsGroup: 1000
+
+          # ============================================================
+          # Basetest
+          # ============================================================
+          - name: "Basetest"
+            namespace: "jenkins"
+            label: "Basetest"
+            nodeUsageMode: "NORMAL"
+            idleMinutes: 0     
+            envVars:
+              - envVar:
+                  key: "TZ"
+                  value: "Asia/Shanghai"
+
+            containers:
+              - name: "basetest"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-3.4.4-20260929"
+                command: "cat"
+                args: ""
+                ttyEnabled: true
+                privileged: true
+                resourceRequestCpu: "1000m"
+                resourceLimitCpu: "4000m"
+                resourceRequestMemory: "1000Mi"
+                resourceLimitMemory: "8192Mi"
+
+              - name: "jnlp"
+                image: "docker.io/jenkins/inbound-agent:latest"
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                resourceRequestCpu: "100m"
+                resourceLimitCpu: "500m"
+                resourceRequestMemory: "400Mi"
+                resourceLimitMemory: "1536Mi"
+
+            workspaceVolume:
+              emptyDirWorkspaceVolume:
+                memory: false
+
+            # workspaceVolume:
+            #   persistentVolumeClaimWorkspaceVolume:
+            #     claimName: "jenkins-agent-pvc"
+            #     readOnly: false
+            yaml: |
+              spec:
+                activeDeadlineSeconds: 21600
+
+                affinity:
+                  nodeAffinity:
+                    preferredDuringSchedulingIgnoredDuringExecution:
+                      - weight: 100
+                        preference:
+                          matchExpressions:
+                            - key: type
+                              operator: In
+                              values:
+                                - ci
+
+                tolerations: []
+
+                containers:
+                  - name: "basetest"
                     resources:
                       requests:
                         ephemeral-storage: "20Gi"
