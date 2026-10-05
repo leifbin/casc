@@ -178,6 +178,15 @@ jenkins:
                       limits:
                         ephemeral-storage: "50Gi"
 
+                    volumeMounts:
+                      - name: podman-storage             
+                        mountPath: /var/lib/containers/storage
+                        subPath: podman-storage
+
+                volumes:
+                  - name: podman-storage
+                    persistentVolumeClaim:
+                      claimName: jenkins-agent-pvc
 
                 securityContext:
                   fsGroup: 1000
