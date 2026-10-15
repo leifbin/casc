@@ -127,7 +127,7 @@ jenkins:
 
             containers:
               - name: "basetest"
-                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-6.1.4-20261015-02"
+                image: "swr.ap-southeast-3.myhuaweicloud.com/ppgame-base/builder:base-kubectl-podman-6.1.4-20261015-03"
                 command: "cat"
                 args: ""
                 ttyEnabled: true
